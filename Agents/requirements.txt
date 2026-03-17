@@ -1,0 +1,8 @@
+# Google Cloud / Vertex AI
+google-cloud-aiplatform[reasoningengine,langchain]>=1.70.0
+
+# HTTP client (used inside agent tools for Google API calls)
+requests>=2.32.0
+
+# Utilities
+python-dotenv>=1.0.0

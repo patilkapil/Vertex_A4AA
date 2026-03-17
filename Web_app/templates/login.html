@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}Login - Cloud Patrol{% endblock %}
+
+{% block content %}
+<style>
+    body { margin: 0; background: #0f172a; }
+    nav { display: none; }
+
+    .login-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+        padding: 20px;
+    }
+
+    .login-card {
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 20px;
+        padding: 48px 40px;
+        width: 100%;
+        max-width: 420px;
+        text-align: center;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .login-icon {
+        width: 72px;
+        height: 72px;
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px;
+        font-size: 32px;
+        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+    }
+
+    .login-title {
+        font-family: 'Inter', sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: #f1f5f9;
+        margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+        font-family: 'Inter', sans-serif;
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 36px;
+        line-height: 1.6;
+    }
+
+    .feature-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 36px;
+        text-align: left;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #94a3b8;
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+    }
+
+    .feature-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .login-btn {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-family: 'Inter', sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .login-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+        color: white;
+        text-decoration: none;
+    }
+
+    .login-footer {
+        margin-top: 24px;
+        color: #475569;
+        font-family: 'Inter', sans-serif;
+        font-size: 12px;
+    }
+
+    .powered-by {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 8px;
+        color: #475569;
+        font-size: 12px;
+        font-family: 'Inter', sans-serif;
+    }
+</style>
+
+<div class="login-wrapper">
+    <div class="login-card">
+        <div class="login-icon">🛡️</div>
+        <div class="login-title">Cloud Patrol</div>
+        <div class="login-subtitle">Google Cloud security operations powered by Vertex AI and Auth0</div>
+
+        <div class="feature-list">
+            <div class="feature-item">
+                <div class="feature-dot" style="background: #3b82f6;"></div>
+                IAM change audit — last 24 hours
+            </div>
+            <div class="feature-item">
+                <div class="feature-dot" style="background: #10b981;"></div>
+                Public bucket exposure detection
+            </div>
+            <div class="feature-item">
+                <div class="feature-dot" style="background: #f59e0b;"></div>
+                IAM binding remediation with step-up auth
+            </div>
+        </div>
+
+        <a href="/login" class="login-btn">🔐 Sign in with Auth0</a>
+
+        <div class="login-footer">
+            Your Google Cloud credentials are used only for this session
+        </div>
+        <div class="powered-by">
+            Powered by Vertex AI &nbsp;&amp;&nbsp; Auth0 for AI Agents
+        </div>
+    </div>
+</div>
+{% endblock %}

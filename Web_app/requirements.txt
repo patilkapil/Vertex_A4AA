@@ -1,0 +1,19 @@
+# Web framework
+fastapi>=0.115.0
+uvicorn>=0.30.0
+python-multipart>=0.0.9        # required for request.form() in FastAPI
+starlette>=0.41.0              # SessionMiddleware
+
+# Auth0
+auth0-server-python>=0.1.0     # ServerClient, CIBA, connect-account
+auth0-fastapi>=0.1.0           # CookieTransactionStore, StatelessStateStore
+
+# Auth0 FGA
+openfga-sdk>=0.7.0
+
+# Google Cloud / Vertex AI
+google-cloud-aiplatform[reasoningengine,langchain]>=1.70.0
+google-auth>=2.35.0            # google.oauth2.credentials.Credentials
+
+# Utilities
+python-dotenv>=1.0.0

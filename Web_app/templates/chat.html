@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Patrol</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ── Top bar ── */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            height: 56px;
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            flex-shrink: 0;
+        }
+
+        .topbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            color: #f1f5f9;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #334155;
+            border-radius: 20px;
+            padding: 4px 12px 4px 4px;
+        }
+
+        .user-pill img {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+        }
+
+        .user-pill span {
+            font-size: 13px;
+            font-weight: 500;
+            color: #cbd5e1;
+        }
+
+        .topbar-btn {
+            background: #334155;
+            color: #94a3b8;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+
+        .topbar-btn:hover {
+            background: #475569;
+            color: #e2e8f0;
+            text-decoration: none;
+        }
+
+        .topbar-btn.danger:hover {
+            background: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        /* ── Main layout ── */
+        .main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            background: #1e293b;
+            border-right: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 16px;
+            gap: 8px;
+            overflow-y: auto;
+        }
+
+        .sidebar-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #475569;
+            padding: 0 8px;
+            margin-top: 8px;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-label:first-child { margin-top: 0; }
+
+        .capability-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: #94a3b8;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+            font-family: inherit;
+            transition: all 0.15s;
+        }
+
+        .capability-btn:hover {
+            background: #334155;
+            color: #e2e8f0;
+            border-color: #475569;
+        }
+
+        .capability-btn .cap-icon {
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .capability-btn.iam { --c: #3b82f6; }
+        .capability-btn.bucket { --c: #10b981; }
+        .capability-btn.remediation { --c: #f59e0b; }
+
+        .capability-btn:hover .cap-dot { background: var(--c); }
+        .cap-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #475569;
+            margin-left: auto;
+            flex-shrink: 0;
+            transition: background 0.15s;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: #334155;
+            margin: 8px 0;
+        }
+
+        .sidebar-info {
+            font-size: 11px;
+            color: #475569;
+            padding: 8px;
+            line-height: 1.6;
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 0 4px;
+        }
+
+        .badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #1e3a5f;
+            color: #60a5fa;
+            border: 1px solid #1d4ed8;
+        }
+
+        .badge.green {
+            background: #064e3b;
+            color: #34d399;
+            border-color: #065f46;
+        }
+
+        .badge.amber {
+            background: #451a03;
+            color: #fbbf24;
+            border-color: #78350f;
+        }
+        .badge.purple {
+            background: #2e1065;
+            color: #c4b5fd;
+            border-color: #5b21b6;
+        }
+
+        .badge.teal {
+            background: #042f2e;
+            color: #2dd4bf;
+            border-color: #0f766e;
+        }
+
+        /* ── Chat area ── */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #chat-box {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        #chat-box::-webkit-scrollbar { width: 6px; }
+        #chat-box::-webkit-scrollbar-track { background: transparent; }
+        #chat-box::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+        /* ── Messages ── */
+        .msg {
+            display: flex;
+            gap: 12px;
+            max-width: 820px;
+        }
+
+        .msg.user { margin-left: auto; flex-direction: row-reverse; }
+
+        .msg-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .msg.user .msg-avatar { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .msg.agent .msg-avatar { background: #334155; }
+        .msg.system .msg-avatar { background: #78350f; }
+
+        .msg-bubble {
+            padding: 12px 16px;
+            border-radius: 14px;
+            font-size: 14px;
+            line-height: 1.65;
+            max-width: 100%;
+        }
+
+        .msg.user .msg-bubble {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .msg.agent .msg-bubble {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            border-bottom-left-radius: 4px;
+        }
+
+        .msg.system .msg-bubble {
+            background: #1c1008;
+            border: 1px solid #92400e;
+            color: #fcd34d;
+            border-bottom-left-radius: 4px;
+        }
+
+        /* Markdown rendering inside agent bubbles */
+        .msg-bubble p { margin-bottom: 8px; }
+        .msg-bubble p:last-child { margin-bottom: 0; }
+        .msg-bubble ul, .msg-bubble ol { padding-left: 20px; margin-bottom: 8px; }
+        .msg-bubble li { margin-bottom: 4px; }
+        .msg-bubble strong { font-weight: 600; }
+        .msg-bubble code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 4px;
+            padding: 1px 5px;
+            color: #7dd3fc;
+        }
+        .msg-bubble pre {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px;
+            overflow-x: auto;
+            margin: 8px 0;
+        }
+        .msg-bubble pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            color: #e2e8f0;
+        }
+        /* Prevent auto-linked emails/URLs from showing as blue hyperlinks */
+        .msg-bubble a {
+            color: inherit;
+            text-decoration: none;
+            pointer-events: none;
+        }
+        .msg.user .msg-bubble code {
+            background: rgba(0,0,0,0.2);
+            border-color: rgba(255,255,255,0.2);
+            color: #bfdbfe;
+        }
+
+        .msg-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            color: #64748b;
+        }
+
+        .msg.user .msg-label { text-align: right; color: #93c5fd; }
+        .msg.system .msg-label { color: #d97706; }
+
+        /* Welcome card */
+        .welcome-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 560px;
+        }
+
+        .welcome-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 8px;
+        }
+
+        .welcome-card p {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: none;
+        }
+
+        .typing-indicator.visible {
+            display: flex;
+        }
+
+        .typing-dots {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 14px 18px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing-dots span {
+            width: 7px;
+            height: 7px;
+            background: #475569;
+            border-radius: 50%;
+            animation: bounce 1.2s infinite;
+        }
+
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); background: #475569; }
+            30% { transform: translateY(-6px); background: #3b82f6; }
+        }
+
+        /* ── Input bar ── */
+        .input-bar {
+            padding: 16px 24px;
+            background: #1e293b;
+            border-top: 1px solid #334155;
+            flex-shrink: 0;
+        }
+
+        #chat-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #user-input {
+            flex: 1;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #e2e8f0;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        #user-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        #user-input::placeholder { color: #475569; }
+
+        .send-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+        }
+
+        .send-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.5);
+        }
+
+        .send-btn:active { transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+    <div class="topbar-brand">
+        <div class="brand-icon">🛡️</div>
+        Cloud Patrol
+    </div>
+    <div class="topbar-right">
+        <div class="user-pill">
+            {% if user.picture %}
+            <img src="{{ user.picture }}" alt="{{ user.name }}">
+            {% endif %}
+            <span>{{ user.name }}</span>
+        </div>
+        {% if messages %}
+        <form method="POST" action="/clear-chat" style="display:inline;">
+            <button type="submit" class="topbar-btn" onclick="return confirm('Clear chat?')">Clear</button>
+        </form>
+        {% endif %}
+        <a href="/logout" class="topbar-btn danger">Sign out</a>
+    </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-label">Quick Actions</div>
+
+        <button class="capability-btn iam" onclick="fillInput('Show me IAM changes in the last 24 hours')">
+            <span class="cap-icon">📋</span>
+            IAM Changes
+            <span class="cap-dot"></span>
+        </button>
+
+        <button class="capability-btn bucket" onclick="fillInput('Are any storage buckets publicly accessible?')">
+            <span class="cap-icon">🪣</span>
+            Public Buckets
+            <span class="cap-dot"></span>
+        </button>
+
+        <button class="capability-btn bucket" onclick="fillInput('What roles does serviceAccount:')">
+            <span class="cap-icon">🔍</span>
+            Lookup SA Roles
+            <span class="cap-dot"></span>
+        </button>
+
+        <button class="capability-btn remediation" onclick="fillInput('Revoke roles/ from ')">
+            <span class="cap-icon">⚠️</span>
+            Revoke Binding
+            <span class="cap-dot"></span>
+        </button>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-label">Security Stack</div>
+        <div class="badge-row">
+            <span class="badge">Auth0 FGA</span>
+            <span class="badge green">CIBA</span>
+            <span class="badge amber">Vertex AI</span>
+            <span class="badge purple">Auth0 for AI Agents</span>
+            <span class="badge teal">Cloud Logging</span>
+            <span class="badge teal">Cloud Storage</span>
+            <span class="badge teal">Cloud IAM</span>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-label">Capabilities</div>
+        <div class="sidebar-info">
+            Revoke actions require <strong style="color:#fbbf24">out-of-band approval</strong> via push notification before execution.
+        </div>
+    </div>
+
+    <!-- Chat area -->
+    <div class="chat-area">
+        <div id="chat-box">
+
+            {% if not messages %}
+            <div class="welcome-card">
+                <h3>👋 Welcome, {{ user.name.split(' ')[0] }}</h3>
+                <p>Ask me about your Google Cloud security posture. Use the quick actions on the left, or type your own question below.</p>
+            </div>
+            {% endif %}
+
+            {% for message in messages %}
+
+            {% if message.sender == 'user' %}
+            <div class="msg user">
+                <div>
+                    <div class="msg-label">You</div>
+                    <div class="msg-bubble">{{ message.message }}</div>
+                </div>
+                <div class="msg-avatar">👤</div>
+            </div>
+
+            {% elif message.sender == 'agent' %}
+            <div class="msg agent">
+                <div class="msg-avatar">🛡️</div>
+                <div>
+                    <div class="msg-label">Assistant</div>
+                    <div class="msg-bubble markdown-content">{{ message.message }}</div>
+                </div>
+            </div>
+
+            {% elif message.sender == 'system' %}
+            <div class="msg system">
+                <div class="msg-avatar">⚠️</div>
+                <div>
+                    <div class="msg-label">System</div>
+                    <div class="msg-bubble">{{ message.message }}</div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% endfor %}
+
+            <!-- Typing indicator shown while waiting -->
+            <div class="msg agent typing-indicator" id="typing">
+                <div class="msg-avatar">🛡️</div>
+                <div class="typing-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Input bar -->
+        <div class="input-bar">
+            <form id="chat-form" method="POST">
+                <input
+                    type="text"
+                    id="user-input"
+                    name="message"
+                    placeholder="Ask about IAM changes, public buckets, or request a remediation..."
+                    autocomplete="off"
+                    autofocus
+                    required
+                >
+                <button type="submit" class="send-btn" title="Send">➤</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Render markdown in all agent message bubbles — disable autolinks so
+    // emails and service account names don't become blue hyperlinks
+    marked.setOptions({ breaks: true, gfm: true, mangle: false });
+    const renderer = new marked.Renderer();
+    renderer.link = (_href, _title, text) => text;  // strip links, keep text only
+    document.querySelectorAll('.markdown-content').forEach(el => {
+        el.innerHTML = marked.parse(el.textContent, { renderer });
+    });
+
+    // Scroll to bottom on load
+    const chatBox = document.getElementById('chat-box');
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Show typing indicator on form submit
+    document.getElementById('chat-form').addEventListener('submit', function () {
+        document.getElementById('typing').classList.add('visible');
+        chatBox.scrollTop = chatBox.scrollHeight;
+    });
+
+    // Fill input from sidebar quick action buttons
+    function fillInput(text) {
+        const input = document.getElementById('user-input');
+        input.value = text;
+        input.focus();
+        input.setSelectionRange(text.length, text.length);
+    }
+
+    // ── CIBA polling ──────────────────────────────────────────────────────────
+    {% if ciba_pending %}
+    // Show the typing indicator while waiting for CIBA approval
+    document.getElementById('typing').classList.add('visible');
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Disable input while approval is pending
+    document.getElementById('user-input').disabled = true;
+    document.getElementById('user-input').placeholder = 'Waiting for approval on your device…';
+    document.querySelector('.send-btn').disabled = true;
+
+    (function pollCiba() {
+        const intervalMs = {{ ciba_poll_interval }} * 1000;
+        setTimeout(function attempt() {
+            fetch('/api/ciba-poll')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data.status === 'approved' || data.status === 'declined' || data.status === 'error' || data.status === 'not_pending') {
+                        window.location.reload();
+                    } else {
+                        // still pending — use server-suggested interval if provided
+                        const next = data.interval || intervalMs;
+                        setTimeout(attempt, next);
+                    }
+                })
+                .catch(function() { setTimeout(attempt, intervalMs); });
+        }, intervalMs);
+    })();
+    {% endif %}
+</script>
+
+</body>
+</html>
