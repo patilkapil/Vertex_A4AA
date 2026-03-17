@@ -100,3 +100,7 @@ cd Web_app
 pip install -r requirements.txt
 uvicorn app:app --host 0.0.0.0 --port 5000 --reload
 ```
+## Expected Output
+<img width="1066" height="985" alt="image" src="https://github.com/user-attachments/assets/af902431-41b9-4fd0-ae57-c62bb88fe20e" />
+
+
