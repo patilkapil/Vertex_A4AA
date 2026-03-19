@@ -4,18 +4,8 @@ A Google Cloud security operations assistant secured by Auth0. Built with FastAP
 
 ## Architecture
 
-```
-User (Browser)
-  │
-  ▼
-FastAPI App (app.py)
-  ├── Auth0 OIDC Login             — primary identity
-  ├── Google Account Linking       — federated token acquisition
-  ├── Gemini 2.0 Flash             — intent classification
-  ├── Auth0 FGA                    — capability authorization check
-  ├── Auth0 CIBA                   — step-up approval for remediation
-  └── Vertex AI Agent Engine       — security orchestrator
-```
+<img width="1580" height="656" alt="image" src="https://github.com/user-attachments/assets/ceb6bbbe-8433-41e8-84f0-436f1090b311" />
+
 
 ## Auth0 Features Used
 
@@ -110,3 +100,7 @@ cd Web_app
 pip install -r requirements.txt
 uvicorn app:app --host 0.0.0.0 --port 5000 --reload
 ```
+## Expected Output
+<img width="1066" height="985" alt="image" src="https://github.com/user-attachments/assets/af902431-41b9-4fd0-ae57-c62bb88fe20e" />
+
+
