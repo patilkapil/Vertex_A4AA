@@ -22,24 +22,7 @@ A Google Cloud security operations assistant that combines **Vertex AI Agent Eng
 
 ## Architecture
 
-```
-User (Browser)
-  │
-  ▼
-Web App (FastAPI)                         ← Web_app/
-  ├── Auth0 OIDC Login
-  ├── Google Account Linking (Token Vault)
-  ├── Gemini 2.0 Flash — Intent Classifier
-  ├── Auth0 FGA — Capability Check
-  └── Auth0 CIBA — Step-up for Remediation
-        │
-        ▼
-  Vertex AI Agent Engine                  ← Agents/
-    Security Orchestrator (gemini-2.5-pro)
-      ├── IAM Changes Agent   → Cloud Logging API
-      ├── Bucket Audit Agent  → Cloud Storage API
-      └── Remediation Agent   → Cloud Resource Manager API
-```
+<img width="1580" height="656" alt="image" src="https://github.com/user-attachments/assets/ceb6bbbe-8433-41e8-84f0-436f1090b311" />
 
 ## Repository Structure
 
