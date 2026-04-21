@@ -1,6 +1,7 @@
 # Cloud Patrol
 
-A Google Cloud security operations assistant that combines **Vertex AI Agent Engine**, **Auth0 for AI Agents** to let authenticated users audit and remediate IAM issues — all running under their own Google identity.
+
+Cloud Patrol is an imaginary Google Cloud security operations assistant that combines **Gemini Enterprise Agent Platform Runtime** and **Auth0 for AI Agents** to let authenticated users audit and remediate IAM issues — all running under their own Google identity. This assistant illustrates how modern identity-aware AI agents can be built to enforce fine-grained authorization and step-up approvals for sensitive cloud security operations.
 
 ## What It Does
 
